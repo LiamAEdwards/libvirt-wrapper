@@ -28,8 +28,8 @@ def main():
         message.write(content)
         print("Created file", {filename})
 
-    with open(filename, mode="w", encoding="utf-8") as vm_xml:
-        xmlconfig = vm_xml.read()
+    with open(filename) as fp:
+        xmlconfig = fp.read()
 
     conn = libvirt.open('qemu:///system')
     if conn is None:
