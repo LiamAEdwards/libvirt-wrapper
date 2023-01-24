@@ -1,9 +1,10 @@
 import sys
 from jinja2 import Environment, FileSystemLoader
 import libvirt
+import configparser
 
 
-def main():
+if __name__ == "__main__":
 
     # Set jinja environment and set template file to use
     environment = Environment(loader=FileSystemLoader("templates/"))
@@ -45,4 +46,4 @@ def main():
 
     instance.create()
 
-main()
+
