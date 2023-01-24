@@ -1,5 +1,7 @@
+import sys
 from jinja2 import Environment, FileSystemLoader
 import libvirt
+
 
 def main():
 
@@ -28,18 +30,18 @@ def main():
         message.write(content)
         print("Created file", {filename})
 
-    with open(filename) as fp:
-        xmlconfig = fp.read()
+    with open(filename, encoding="utf-8") as vm_xml:
+        xmlconfig = vm_xml.read()
 
     conn = libvirt.open('qemu:///system')
     if conn is None:
         print('Failed to connect to the hypervisor')
-        exit(1)
+        sys.exit(1)
 
     instance = conn.defineXML(xmlconfig)
     if instance is None:
         print('Failed to define the instance')
-        exit(1)
+        sys.exit(1)
 
     instance.create()
 
