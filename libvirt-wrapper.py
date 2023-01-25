@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # Set jinja environment and set template file to use
     environment = Environment(loader=FileSystemLoader("templates/"))
-    template = environment.get_template("default.xml")
+    template = environment.get_template("default.xml.jinja")
 
     # Read config file
     config = configparser.ConfigParser()
