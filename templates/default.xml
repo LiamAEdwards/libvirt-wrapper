@@ -16,6 +16,11 @@
     <type arch='x86_64' machine='pc-q35-6.2'>hvm</type>
     <boot dev='cdrom'/>
     <boot dev='hd'/>
+    {% if kickstart %}
+    <kernel>/var/lib/libvirt/boot/vmlinuz</kernel>
+    <initrd>/var/lib/libvirt/boot/initrd.img</initrd>
+    <cmdline>ks={{ kickstart }}</cmdline>
+    {% endif %}
   </os>
   <features>
     <acpi/>

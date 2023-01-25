@@ -29,6 +29,7 @@ if __name__ == "__main__":
     vcpus         = defaults['vcpus']
     path          = defaults['path']
     iso           = defaults['iso']
+    kickstart     = defaults['kickstart']
 
     filename = "virt-xml.xml"
     content = template.render(
@@ -37,7 +38,8 @@ if __name__ == "__main__":
         memory=memory,
         vcpus=vcpus,
         path=path,
-        iso=iso
+        iso=iso,
+        kickstart=kickstart
     )
     with open(filename, mode="w", encoding="utf-8") as message:
         message.write(content)
