@@ -2,6 +2,17 @@ import sys
 from jinja2 import Environment, FileSystemLoader
 import libvirt
 import configparser
+import http.server
+import socketserver
+
+
+# HTTP server for serving kickstart file
+def start_server():
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", 80), Handler) as httpd:
+        print("serving at port", 80)
+        httpd.serve_forever()
+
 
 
 if __name__ == "__main__":
@@ -52,6 +63,11 @@ if __name__ == "__main__":
         print('Failed to define the instance')
         sys.exit(1)
 
+
     instance.create()
+    start_server()
+
+
+
 
 

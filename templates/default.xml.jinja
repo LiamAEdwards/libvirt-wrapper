@@ -19,7 +19,7 @@
     {% if kickstart %}
     <kernel>/var/lib/libvirt/boot/vmlinuz</kernel>
     <initrd>/var/lib/libvirt/boot/initrd.img</initrd>
-    <cmdline>ks={{ kickstart }}</cmdline>
+    <cmdline>inst.ks={{ kickstart }}</cmdline>
     {% endif %}
   </os>
   <features>
