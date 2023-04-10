@@ -1,73 +1,41 @@
-import sys
-from jinja2 import Environment, FileSystemLoader
-import libvirt
 import configparser
-import http.server
-import socketserver
-
-
-# HTTP server for serving kickstart file
-def start_server():
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", 80), Handler) as httpd:
-        print("serving at port", 80)
-        httpd.serve_forever()
-
+import subprocess
 
 
 if __name__ == "__main__":
-
-    # Set jinja environment and set template file to use
-    environment = Environment(loader=FileSystemLoader("templates/"))
-    template = environment.get_template("default.xml.jinja")
-
     # Read config file
     config = configparser.ConfigParser()
-    config.read('config/vm.ini')
-    defaults = config['DEFAULT']
+    config.read("config/vm.ini")
+    defaults = config["DEFAULT"]
 
     # configparser variables from vm.ini
-    name          = defaults['name']
-    description   = defaults['description']
-    memory        = defaults['memory']
-    vcpus         = defaults['vcpus']
-    path          = defaults['path']
-    iso           = defaults['iso']
-    kickstart     = defaults['kickstart']
+    name = defaults["name"]
+    description = defaults["description"]
+    ram = defaults["ram"]
+    vcpus = defaults["vcpus"]
+    ks_path = defaults["ks_path"]
+    os_variant = defaults["os_variant"]
+    disk_path = defaults["disk_path"]
+    disk_size = defaults["disk_size"]
+    location = defaults["location"]
+    network_bridge = defaults["network_bridge"]
 
-    content = template.render(
-        name=name,
-        description=description,
-        memory=memory,
-        vcpus=vcpus,
-        path=path,
-        iso=iso,
-        kickstart=kickstart
-    )
+    # Construct the command as a list of arguments
+    cmd = [
+        "virt-install",
+        f"--name={name}",
+        f"--ram={ram}",
+        f"--vcpus={vcpus}",
+        f"--disk=path={disk_path},size={disk_size}",
+        f"--os-variant={os_variant}",
+        "--graphics=none",
+        f"--network=bridge={network_bridge}",
+        f"--location={location}",
+        f"--initrd-inject={ks_path}",
+        "--extra-args", "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8",
+        "--check=all=on",
+        f"--cpu=host",
+    ]
 
-    filename = "virt-xml.xml"
-    with open(filename, mode="w", encoding="utf-8") as message:
-        message.write(content)
-        print("Created file", {filename})
-
-    with open(filename, encoding="utf-8") as vm_xml:
-        xmlconfig = vm_xml.read()
-
-    conn = libvirt.open('qemu:///system')
-    if conn is None:
-        print('Failed to connect to the hypervisor')
-        sys.exit(1)
-
-    instance = conn.defineXML(xmlconfig)
-    if instance is None:
-        print('Failed to define the instance')
-        sys.exit(1)
-
-
-    instance.create()
-    start_server()
-
-
-
-
-
+    # Execute the command
+    subprocess.run(cmd, check=True)
