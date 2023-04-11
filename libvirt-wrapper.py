@@ -19,6 +19,7 @@ if __name__ == "__main__":
     disk_size = defaults["disk_size"]
     location = defaults["location"]
     network_bridge = defaults["network_bridge"]
+    graphics = defaults["graphics"]
 
     # Construct the command as a list of arguments
     cmd = [
@@ -28,13 +29,14 @@ if __name__ == "__main__":
         f"--vcpus={vcpus}",
         f"--disk=path={disk_path},size={disk_size}",
         f"--os-variant={os_variant}",
-        "--graphics=none",
+        f"--graphics={graphics}",
         f"--network=bridge={network_bridge}",
         f"--location={location}",
         f"--initrd-inject={ks_path}",
-        "--extra-args", "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8",
+        "--extra-args",
+        "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8",
         "--check=all=on",
-        f"--cpu=host",
+        "--cpu=host",
     ]
 
     # Execute the command
